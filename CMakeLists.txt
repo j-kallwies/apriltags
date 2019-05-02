@@ -43,9 +43,11 @@ include_directories(${EIGEN_INCLUDE_DIRS})
 list(APPEND apriltags_INCLUDES ${EIGEN_INCLUDE_DIRS} )
 
 # Camera drivers
-find_package(V4L2 REQUIRED)
-include_directories(${V4L2_INCLUDE_DIRS})
-list(APPEND apriltags_LIBS ${V4L2_LIBRARIES})
+find_package(V4L2)
+if(V4L2_FOUND)
+  include_directories(${V4L2_INCLUDE_DIRS})
+  list(APPEND apriltags_LIBS ${V4L2_LIBRARIES})
+endif()
 
 # AprilTag headers
 include_directories("${PROJECT_SOURCE_DIR}/include")
@@ -55,7 +57,9 @@ set(LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 set(BINARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
 
 add_subdirectory(src)
-add_subdirectory(example)
+if(V4L2_FOUND)
+  add_subdirectory(example)
+endif()
 
 export(TARGETS apriltags
     FILE "${PROJECT_BINARY_DIR}/apriltagsTargets.cmake")
